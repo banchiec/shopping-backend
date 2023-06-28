@@ -1,54 +1,50 @@
-const router = require("express").Router();
+const router = require('express').Router()
 
 // ℹ️ Handles password encryption
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 // How many rounds should bcrypt run the salt (default [10 - 12 rounds])
 
 // Require the User model in order to interact with the database
-const Product = require("../models/Product.model")
+const Product = require('../models/Product.model')
 
 // Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
-const isLoggedIn = require("../middleware/isLoggedIn");
+const isLoggedIn = require('../middleware/isLoggedIn')
 
-router.get("/", isLoggedIn,(req, res) => {
+router.get('/', isLoggedIn, (req, res) => {
 	try {
 		Product.find()
-		.then((data)=>{
-			return res.status(200).json(data)
-		})
-		.catch(error => console.log(error))
+			.then((data) => {
+				return res.status(200).json(data)
+			})
+			.catch((error) => console.log(error))
 	} catch (error) {
-		console.log(error);
+		console.log(error)
 	}
-});
+})
 
 router.post('/', async (req, res) => {
 	const { name } = req.body
-	if(name){
-		try{
+	if (name) {
+		try {
 			const product = await Product.findOne({ name })
-				if (!product) {
-					const newProduct = new Product(req.body)
-					Product
-						.create(newProduct)
-						.then((data) => {
-								console.log(data)
-								return res.status(200).json(data)
-						})
-						.catch((error) => {
-								return res.status(500).json(error)
-						})
-			  }
-				else {
-					return res.status(500).json('product exist')
-				}
-		}
-		catch(error){
+			if (!product) {
+				const newProduct = new Product(req.body)
+				Product.create(newProduct)
+					.then((data) => {
+						return res.status(200).json(data)
+					})
+					.catch((error) => {
+						return res.status(500).json(error)
+					})
+			} else {
+				return res.status(500).json('product exist')
+			}
+		} catch (error) {
 			return res.status(500).json(error)
 		}
-	}else{
-    res.status(422).json('name necesary')
+	} else {
+		res.status(422).json('name necesary')
 	}
 })
 
@@ -177,4 +173,4 @@ router.post('/', async (req, res) => {
 //     });
 // });
 
-module.exports = router;
+module.exports = router

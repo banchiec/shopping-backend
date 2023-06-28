@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
 	}
 })
 
-router.post('/', upload.single('photo'), async (req, res) => {
+router.post('/', isLoggedIn, upload.single('photo'), async (req, res) => {
 	const { name, subCategory } = req.body
 	const photo = req.file.filename
 
